@@ -13,6 +13,18 @@ if($_SESSION['status'] != 'login'){
 
 }
 
+if(isset($_GET['hal']) == "hapus"){
+
+    $hapus = mysqli_query($koneksi, "DELETE FROM loket WHERE id = '$_GET[id]'");
+  
+    if($hapus){
+        echo "<script>
+        alert('Hapus data sukses!');
+        document.location='loket.php';
+        </script>";
+    }
+  }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -122,13 +134,6 @@ if($_SESSION['status'] != 'login'){
       </li><!-- End Profile Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="tambah-antrian.php">
-          <i class="bi bi-question-circle"></i>
-          <span>Tambah Antrian</span>
-        </a>
-      </li><!-- End F.A.Q Page Nav -->
-
-      <li class="nav-item">
         <a class="nav-link collapsed" href="riwayat-antrian.php">
           <i class="bi bi-envelope"></i>
           <span>Riwayat Antrian</span>
@@ -141,13 +146,6 @@ if($_SESSION['status'] != 'login'){
           <span>Laporan Antrian</span>
         </a>
       </li><!-- End Register Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="layanan.php">
-          <i class="bi bi-box-arrow-in-right"></i>
-          <span>Layanan</span>
-        </a>
-      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="loket.php">
@@ -164,13 +162,7 @@ if($_SESSION['status'] != 'login'){
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Layanan</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active">Layanan</li>
-        </ol>
-      </nav>
+      <h1>Loket</h1>
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
@@ -179,28 +171,30 @@ if($_SESSION['status'] != 'login'){
             <!-- Recent Sales -->
             <div class="col-12">
               <div class="card recent-sales overflow-auto">
-                <div class="card-body">
-                  <a href="tambah-layanan.php" class="btn btn-success mb-3">Tambah Data</a>
+                  <div class="card-body">
+                  <a class="btn btn-success mb-3" href="tambahloket.php">Tambah Data</a>
                   <table class="table table-borderless datatable">
                     <thead>
                       <tr>
                         <th scope="col">No</th>
-                        <th scope="col">Nama Layanan</th>
+                        <th scope="col">Nama Loket</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                     <?php
                         $no = 1;
-                        $tampil = mysqli_query($koneksi, "SELECT * FROM layanan");
+                        $tampil = mysqli_query($koneksi, "SELECT * FROM loket");
                         while($data = mysqli_fetch_array($tampil)):
-                    ?>
+                    ?>                       
                       <tr>
-                        <th scope="row"><?= $no ?></th>
+                        <td><?= $no++ ?></td>
                         <td><?= $data['nama'] ?></td>
+                        <td><?= $data['status'] ?></td>
                         <td>
-                            <a href="" class="btn btn-warning">Edit</a>
-                            <a href="" class="btn btn-danger">Hapus</a>
+                            <a href="editloket.php?hal=edit&id=<?= $data['id'] ?>" class="btn btn-warning">Edit</a>
+                            <a href="loket.php?hal=hapus&id=<?= $data['id'] ?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')" class="btn btn-danger">Hapus</a>
                         </td>
                       </tr>
                       <?php

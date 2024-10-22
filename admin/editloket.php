@@ -13,20 +13,36 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if(isset($_POST['simpan'])){
-    $simpan = mysqli_query($koneksi, "INSERT INTO layanan (nama) VALUES ('$_POST[name]')");
-
-    if($simpan){
-        echo "<script>
-                alert('Simpan data sukses!');
-                document.location='layanan.php';
-            </script>";
-    } else {
-        echo "<script>
-                alert('Simpan data Gagal!');
-                document.location='layanan.php';
-            </script>";
+if(isset($_GET['hal'])){
+    if($_GET['hal'] == "edit"){
+        $tampil = mysqli_query($koneksi, "SELECT * FROM loket WHERE id = '$_GET[id]'");
+        $data = mysqli_fetch_array($tampil);
+        if($data){
+            $id = $data['id'];
+            $nama = $data['nama'];
+            $status = $data['status'];
+        }
     }
+}
+
+//Perintah Mengubah Data
+if(isset($_POST['simpan'])){
+
+    $simpan = mysqli_query($koneksi, "UPDATE loket SET
+                                        nama = '$_POST[name]',
+                                        status = '$_POST[status]' WHERE id = '$_GET[id]'");
+    
+if($simpan){
+    echo "<script>
+            alert('Edit data sukses!');
+            document.location='loket.php';
+        </script>";
+} else {
+    echo "<script>
+            alert('Edit data Gagal!');
+            document.location='loket.php';
+        </script>";
+}
 }
 
 ?>
@@ -138,13 +154,6 @@ if(isset($_POST['simpan'])){
       </li><!-- End Profile Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="tambah-antrian.php">
-          <i class="bi bi-question-circle"></i>
-          <span>Tambah Antrian</span>
-        </a>
-      </li><!-- End F.A.Q Page Nav -->
-
-      <li class="nav-item">
         <a class="nav-link collapsed" href="riwayat-antrian.php">
           <i class="bi bi-envelope"></i>
           <span>Riwayat Antrian</span>
@@ -157,13 +166,6 @@ if(isset($_POST['simpan'])){
           <span>Laporan Antrian</span>
         </a>
       </li><!-- End Register Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="layanan.php">
-          <i class="bi bi-box-arrow-in-right"></i>
-          <span>Layanan</span>
-        </a>
-      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="loket.php">
@@ -180,7 +182,7 @@ if(isset($_POST['simpan'])){
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Layanan</h1>
+      <h1>Loket</h1>
     </div><!-- End Page Title -->
 
     <section class="section">
@@ -189,19 +191,27 @@ if(isset($_POST['simpan'])){
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Tambah Layanan</h5>
-
+              <h5 class="card-title">Tambah Loket</h5>
               <!-- Horizontal Form -->
               <form method="post">
                 <div class="row mb-3">
                   <label for="name" class="col-sm-2 col-form-label">Nama</label>
                   <div class="col-sm-6">
-                    <input type="text" class="form-control" id="name" name="name" required autofocus>
+                    <input type="text" class="form-control" id="name" value="<?= $nama ?>" name="name" required autofocus>
+                  </div>
+                </div>
 
-
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Status</label>
+                  <div class="col-sm-6">
+                    <select class="form-select" name="status" aria-label="Default select example">
+                      <option selected disabled>Pilih</option>
+                      <option value="Aktif">Aktif</option>
+                      <option value="Tidak Aktif">Tidak Aktif</option>
+                    </select>
                     <div class="col-sm-6 mt-3">
-                      <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
-                    </div>
+                        <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
+                      </div>
                   </div>
                 </div>
                 

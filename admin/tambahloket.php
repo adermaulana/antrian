@@ -13,6 +13,22 @@ if($_SESSION['status'] != 'login'){
 
 }
 
+if(isset($_POST['simpan'])){
+    $simpan = mysqli_query($koneksi, "INSERT INTO loket (nama,status) VALUES ('$_POST[name]','$_POST[status]')");
+
+    if($simpan){
+        echo "<script>
+                alert('Simpan data sukses!');
+                document.location='loket.php';
+            </script>";
+    } else {
+        echo "<script>
+                alert('Simpan data Gagal!');
+                document.location='loket.php';
+            </script>";
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,52 +166,47 @@ if($_SESSION['status'] != 'login'){
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Antrian Aktif</h1>
+      <h1>Loket</h1>
     </div><!-- End Page Title -->
 
-    <section class="section dashboard">
+    <section class="section">
       <div class="row">
+        <div class="col-lg-12">
 
-            <!-- Recent Sales -->
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
-                <div class="card-body">
-                  <table class="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nomor Antrian</th>
-                        <th scope="col">Loket</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>BRI001</td>
-                        <td>Loket 1</td>
-                        <td>Menunggu</td>
-                        <td>
-                            <a href="" class="btn btn-warning">Panggil</a>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Tambah Loket</h5>
+              <!-- Horizontal Form -->
+              <form method="post">
+                <div class="row mb-3">
+                  <label for="name" class="col-sm-2 col-form-label">Nama</label>
+                  <div class="col-sm-6">
+                    <input type="text" class="form-control" id="name" name="name" required autofocus>
+                  </div>
                 </div>
 
-              </div>
-            </div><!-- End Recent Sales -->
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Status</label>
+                  <div class="col-sm-6">
+                    <select class="form-select" name="status" aria-label="Default select example">
+                      <option selected disabled>Pilih</option>
+                      <option value="Aktif">Aktif</option>
+                      <option value="Tidak Aktif">Tidak Aktif</option>
+                    </select>
+                    <div class="col-sm-6 mt-3">
+                        <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
+                      </div>
+                  </div>
+                </div>
+                
+              </form><!-- End Horizontal Form -->
 
+            </div>
           </div>
-        </div><!-- End Left side columns -->
-
-        <!-- Right side columns -->
-        <div class="col-lg-4">
 
 
-        </div><!-- End Right side columns -->
+
+        </div>
 
       </div>
     </section>
