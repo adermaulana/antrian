@@ -69,7 +69,7 @@
       <div class="container section-title" data-aos="fade-up">
         <h2>Pilih Layanan</h2>
       </div><!-- End Section Title -->
-    </section><!-- /Services Section -->
+    </section>
 
     <!-- Alt Services Section -->
     <section id="alt-services" style="margin-top:-150px;" class="alt-services section">

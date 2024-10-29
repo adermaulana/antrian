@@ -62,6 +62,72 @@
   </header>
 
 
+  <main class="main">
+    <!-- Services Section -->
+    <section id="services" class="services section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Lihat Antrian</h2>
+      </div><!-- End Section Title -->
+    </section>
+
+    <!-- Alt Services Section -->
+    <section id="alt-services" style="margin-top:-150px;" class="alt-services section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+
+        <div class="col-lg-12" data-aos="fade-up" data-aos-delay="200">
+            <h3>Daftar Antrian</h3>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Nomor Antrian</th>
+                  <th>Loket</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+              <?php
+
+              include 'koneksi.php';
+
+                        $no = 1;
+                        $tampil = mysqli_query($koneksi, "SELECT 
+                                                              a.nomor_antrian,
+                                                              a.status,
+                                                              l.nama as nama_loket
+                                                          FROM 
+                                                              antrian a
+                                                          JOIN 
+                                                              loket l ON a.loket_id = l.id;
+                                                          ");
+                        while($data = mysqli_fetch_array($tampil)):
+                    ?>  
+                <tr>
+                  <td><?= $data['nomor_antrian'] ?></td>
+                  <td><?= $data['nama_loket'] ?></td>
+                  <td><?= $data['status'] ?></td>
+                </tr>
+                <?php
+                        endwhile; 
+                      ?>
+              </tbody>
+            </table>
+          </div><!-- End Antrian Table -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Alt Services Section -->
+
+
+
+  </main>
+
 
   <footer id="footer" class="footer">
 
