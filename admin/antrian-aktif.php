@@ -150,7 +150,7 @@ if($_SESSION['status'] != 'login'){
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Antrian Aktif</h1>
+      <h1>Antrian Menunggu</h1>
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
@@ -171,15 +171,33 @@ if($_SESSION['status'] != 'login'){
                       </tr>
                     </thead>
                     <tbody>
+                    <?php
+                        $no = 1;
+                        $tampil = mysqli_query($koneksi, "SELECT 
+                                                              a.nomor_antrian,
+                                                              a.status,
+                                                              l.nama as nama_loket
+                                                          FROM 
+                                                              antrian a
+                                                          JOIN 
+                                                              loket l ON a.loket_id = l.id
+                                                          WHERE status = 'menunggu'
+                                                          ;
+                                                          ");
+                        while($data = mysqli_fetch_array($tampil)):
+                    ?>  
                       <tr>
-                        <td>1</td>
-                        <td>BRI001</td>
-                        <td>Loket 1</td>
-                        <td>Menunggu</td>
+                        <td><?= $no++ ?></td>
+                        <td><?= $data['nomor_antrian'] ?></td>
+                        <td><?= $data['nama_loket'] ?></td>
+                        <td><?= $data['status'] ?></td>
                         <td>
-                            <a href="" class="btn btn-warning">Panggil</a>
+                            <a href="proses_aktif.php?nomor_antrian=<?= $data['nomor_antrian'] ?>" onclick="return confirm('Apakah Anda Yakin Ingin Panggil Customer?')" class="btn btn-warning">Panggil</a>
                         </td>
                       </tr>
+                      <?php
+                        endwhile; 
+                      ?>
                     </tbody>
                   </table>
 
@@ -196,6 +214,140 @@ if($_SESSION['status'] != 'login'){
 
 
         </div><!-- End Right side columns -->
+
+      </div>
+    </section>
+
+    <div class="pagetitle">
+      <h1>Dilayani CS</h1>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+
+            <!-- Recent Sales -->
+            <div class="col-12">
+              <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                  <table class="table table-borderless datatable">
+                    <thead>
+                      <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Nomor Antrian</th>
+                        <th scope="col">Loket</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        $no = 1;
+                        $tampil = mysqli_query($koneksi, "SELECT 
+                                                              a.nomor_antrian,
+                                                              a.status,
+                                                              l.nama as nama_loket
+                                                          FROM 
+                                                              antrian a
+                                                          JOIN 
+                                                              loket l ON a.loket_id = l.id
+                                                          WHERE status = 'aktif'
+                                                          ;
+                                                          ");
+                        while($data = mysqli_fetch_array($tampil)):
+                    ?>  
+                      <tr>
+                        <td><?= $no++ ?></td>
+                        <td><?= $data['nomor_antrian'] ?></td>
+                        <td><?= $data['nama_loket'] ?></td>
+                        <td><?= $data['status'] ?></td>
+                        <td>
+                          <a href="proses_selesai.php?nomor_antrian=<?= $data['nomor_antrian'] ?>" onclick="return confirm('Apakah Anda Yakin Sudah Selesai?')" class="btn btn-success">Selesai</a>
+                        </td>
+                      </tr>
+                      <?php
+                        endwhile; 
+                      ?>
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+            </div><!-- End Recent Sales -->
+
+          </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+
+        </div><!-- End Right side columns -->
+
+      </div>
+    </section>
+
+    <div class="pagetitle">
+      <h1>Selesai</h1>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+
+            <!-- Recent Sales -->
+            <div class="col-12">
+              <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                  <table class="table table-borderless datatable">
+                    <thead>
+                      <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Nomor Antrian</th>
+                        <th scope="col">Loket</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        $no = 1;
+                        $tampil = mysqli_query($koneksi, "SELECT 
+                                                              a.nomor_antrian,
+                                                              a.status,
+                                                              l.nama as nama_loket
+                                                          FROM 
+                                                              antrian a
+                                                          JOIN 
+                                                              loket l ON a.loket_id = l.id
+                                                          WHERE status = 'selesai'
+                                                          ;
+                                                          ");
+                        while($data = mysqli_fetch_array($tampil)):
+                    ?>  
+                      <tr>
+                        <td><?= $no++ ?></td>
+                        <td><?= $data['nomor_antrian'] ?></td>
+                        <td><?= $data['nama_loket'] ?></td>
+                        <td><?= $data['status'] ?></td>
+                        <td>
+                             <span class="badge bg-success">Selesai</span>
+                        </td>
+                      </tr>
+                      <?php
+                        endwhile; 
+                      ?>
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+            </div><!-- End Recent Sales -->
+
+          </div>
+        </div><!-- End Left side columns -->
+
+
 
       </div>
     </section>
