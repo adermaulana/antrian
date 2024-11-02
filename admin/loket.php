@@ -172,13 +172,12 @@ if(isset($_GET['hal']) == "hapus"){
             <div class="col-12">
               <div class="card recent-sales overflow-auto">
                   <div class="card-body">
-                  <a class="btn btn-success mb-3" href="tambahloket.php">Tambah Data</a>
+                  <a class="btn btn-success mb-3 mt-3" href="tambahloket.php">Tambah Data</a>
                   <table class="table table-borderless datatable">
                     <thead>
                       <tr>
                         <th scope="col">No</th>
                         <th scope="col">Nama Loket</th>
-                        <th scope="col">Status</th>
                         <th scope="col">Aksi</th>
                       </tr>
                     </thead>
@@ -191,7 +190,6 @@ if(isset($_GET['hal']) == "hapus"){
                       <tr>
                         <td><?= $no++ ?></td>
                         <td><?= $data['nama'] ?></td>
-                        <td><?= $data['status'] ?></td>
                         <td>
                             <a href="editloket.php?hal=edit&id=<?= $data['id'] ?>" class="btn btn-warning">Edit</a>
                             <a href="loket.php?hal=hapus&id=<?= $data['id'] ?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')" class="btn btn-danger">Hapus</a>

@@ -391,23 +391,6 @@ if($_SESSION['status'] != 'login'){
 
   <script>
 
-// Inisialisasi suara
-function initializeSound() {
-    const testUtterance = new SpeechSynthesisUtterance('Sistem panggilan antrian siap digunakan');
-    testUtterance.lang = 'id-ID';
-    testUtterance.onend = function() {
-        document.getElementById('soundStatus').innerHTML = 
-            '<div class="alert alert-success">Suara berhasil diaktifkan!</div>';
-        setTimeout(() => {
-            bootstrap.Modal.getInstance(document.getElementById('soundModal')).hide();
-        }, 2000);
-    };
-    testUtterance.onerror = function() {
-        document.getElementById('soundStatus').innerHTML = 
-            '<div class="alert alert-danger">Gagal mengaktifkan suara. Silakan coba lagi.</div>';
-    };
-    window.speechSynthesis.speak(testUtterance);
-}
 
 // Fungsi untuk memanggil antrian
 function panggilAntrian(nomorAntrian, namaLoket) {
