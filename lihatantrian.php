@@ -98,11 +98,14 @@
                         $tampil = mysqli_query($koneksi, "SELECT 
                                                               a.nomor_antrian,
                                                               a.status,
-                                                              l.nama as nama_loket
+                                                              l.nama AS nama_loket
                                                           FROM 
                                                               antrian a
                                                           JOIN 
-                                                              loket l ON a.loket_id = l.id;
+                                                              loket l ON a.loket_id = l.id
+                                                          ORDER BY 
+                                                              CASE WHEN a.status = 'selesai' THEN 1 ELSE 0 END,
+                                                              a.nomor_antrian ASC;
                                                           ");
                         while($data = mysqli_fetch_array($tampil)):
                     ?>  

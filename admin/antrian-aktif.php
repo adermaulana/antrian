@@ -160,46 +160,52 @@ if($_SESSION['status'] != 'login'){
             <div class="col-12">
               <div class="card recent-sales overflow-auto">
                 <div class="card-body">
-                  <table class="table table-borderless datatable">
-                    <thead>
+                <table class="table table-borderless datatable">
+                  <thead>
                       <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nomor Antrian</th>
-                        <th scope="col">Loket</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Aksi</th>
+                          <th scope="col">No</th>
+                          <th scope="col">Nomor Antrian</th>
+                          <th scope="col">Loket</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Aksi</th>
                       </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                        $no = 1;
-                        $tampil = mysqli_query($koneksi, "SELECT 
-                                                              a.nomor_antrian,
-                                                              a.status,
-                                                              l.nama as nama_loket
-                                                          FROM 
-                                                              antrian a
-                                                          JOIN 
-                                                              loket l ON a.loket_id = l.id
-                                                          WHERE status = 'menunggu'
-                                                          ;
-                                                          ");
-                        while($data = mysqli_fetch_array($tampil)):
-                    ?>  
+                  </thead>
+                  <tbody>
+                  <?php
+                      $no = 1;
+                      $tampil = mysqli_query($koneksi, "SELECT 
+                                                          a.nomor_antrian,
+                                                          a.status,
+                                                          l.nama as nama_loket
+                                                      FROM 
+                                                          antrian a
+                                                      JOIN 
+                                                          loket l ON a.loket_id = l.id
+                                                      WHERE status = 'menunggu' ORDER BY a.id ASC
+                                                      ;
+                                                      ");
+                      while($data = mysqli_fetch_array($tampil)):
+                  ?>  
                       <tr>
-                        <td><?= $no++ ?></td>
-                        <td><?= $data['nomor_antrian'] ?></td>
-                        <td><?= $data['nama_loket'] ?></td>
-                        <td><?= $data['status'] ?></td>
-                        <td>
-                            <a href="proses_aktif.php?nomor_antrian=<?= $data['nomor_antrian'] ?>" onclick="return confirm('Apakah Anda Yakin Ingin Panggil Customer?')" class="btn btn-warning">Panggil</a>
-                        </td>
+                          <td><?= $no++ ?></td>
+                          <td><?= $data['nomor_antrian'] ?></td>
+                          <td><?= $data['nama_loket'] ?></td>
+                          <td><?= $data['status'] ?></td>
+                          <td>
+                              <a href="#" 
+                                onclick="return panggilDanRedirect(
+                                    '<?= $data['nomor_antrian'] ?>', 
+                                    '<?= $data['nama_loket'] ?>', 
+                                    'proses_aktif.php?nomor_antrian=<?= $data['nomor_antrian'] ?>'
+                                )" 
+                                class="btn btn-warning">Panggil</a>
+                          </td>
                       </tr>
-                      <?php
-                        endwhile; 
-                      ?>
-                    </tbody>
-                  </table>
+                  <?php
+                      endwhile; 
+                  ?>
+                  </tbody>
+              </table>
 
                 </div>
 
@@ -382,6 +388,62 @@ if($_SESSION['status'] != 'login'){
 
   <!-- Template Main JS File -->
   <script src="../assets/js/main.js"></script>
+
+  <script>
+
+// Inisialisasi suara
+function initializeSound() {
+    const testUtterance = new SpeechSynthesisUtterance('Sistem panggilan antrian siap digunakan');
+    testUtterance.lang = 'id-ID';
+    testUtterance.onend = function() {
+        document.getElementById('soundStatus').innerHTML = 
+            '<div class="alert alert-success">Suara berhasil diaktifkan!</div>';
+        setTimeout(() => {
+            bootstrap.Modal.getInstance(document.getElementById('soundModal')).hide();
+        }, 2000);
+    };
+    testUtterance.onerror = function() {
+        document.getElementById('soundStatus').innerHTML = 
+            '<div class="alert alert-danger">Gagal mengaktifkan suara. Silakan coba lagi.</div>';
+    };
+    window.speechSynthesis.speak(testUtterance);
+}
+
+// Fungsi untuk memanggil antrian
+function panggilAntrian(nomorAntrian, namaLoket) {
+    // Hentikan semua suara yang sedang berjalan
+    window.speechSynthesis.cancel();
+
+    const teksAntrian = `Nomor antrian ${nomorAntrian}, silahkan menuju ${namaLoket}`;
+    console.log('Memanggil:', teksAntrian); // Debug log
+
+    const speech = new SpeechSynthesisUtterance(teksAntrian);
+    speech.lang = 'id-ID';
+    speech.rate = 0.9;
+    speech.volume = 1;
+    speech.pitch = 1;
+
+    speech.onerror = function(event) {
+        console.error('Kesalahan speech:', event);
+    };
+
+    window.speechSynthesis.speak(speech);
+    return speech;
+}
+
+// Fungsi untuk memanggil antrian dan redirect
+function panggilDanRedirect(nomorAntrian, namaLoket, redirectUrl) {
+    const speech = panggilAntrian(nomorAntrian, namaLoket);
+    
+    speech.onend = function() {
+        setTimeout(() => {
+            window.location.href = redirectUrl;
+        }, 1000);
+    };
+    
+    return false;
+}
+</script>
 
 </body>
 
