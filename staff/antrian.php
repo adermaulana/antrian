@@ -13,6 +13,12 @@ if($_SESSION['status'] != 'login'){
 
 }
 
+$id_loket = $_SESSION['id_loket'];
+
+
+$tampil = mysqli_query($koneksi, "SELECT * FROM loket WHERE id = '$id_loket'");
+$data = mysqli_fetch_array($tampil);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,12 +81,12 @@ if($_SESSION['status'] != 'login'){
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2"><?= $_SESSION['nama_admin'] ?></span>
+            <span class="d-none d-md-block dropdown-toggle ps-2"><?= $_SESSION['nama_staff'] ?></span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6><?= $_SESSION['nama_admin'] ?></h6>
+              <h6><?= $_SESSION['nama_staff'] ?></h6>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -115,39 +121,13 @@ if($_SESSION['status'] != 'login'){
       <li class="nav-heading">Pages</li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="antrian-aktif.php">
+        <a class="nav-link collapsed" href="antrian.php">
           <i class="bi bi-person"></i>
-          <span>Antrian Aktif</span>
+          <span>Antrian</span>
         </a>
       </li><!-- End Profile Page Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="riwayat-antrian.php">
-          <i class="bi bi-envelope"></i>
-          <span>Riwayat Antrian</span>
-        </a>
-      </li><!-- End Contact Page Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="laporan-antrian.php">
-          <i class="bi bi-card-list"></i>
-          <span>Laporan Antrian</span>
-        </a>
-      </li><!-- End Register Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="loket.php">
-          <i class="bi bi-layout-text-window-reverse"></i>
-          <span>Loket</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="staff.php">
-          <i class="bi bi-layout-text-window-reverse"></i>
-          <span>Customer Service</span>
-        </a>
-      </li>
 
     </ul>
 
@@ -156,7 +136,49 @@ if($_SESSION['status'] != 'login'){
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Riwayat Antrian</h1>
+      <h1><?= $data['nama'] ?></h1>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+
+            <!-- Recent Sales -->
+            <div class="col-12">
+              <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                <table class="table table-borderless datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Nomor Antrian</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="antrianTableBody">
+                        <!-- Data akan dimuat di sini -->
+                    </tbody>
+                </table>
+
+                </div>
+
+              </div>
+            </div><!-- End Recent Sales -->
+
+          </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+
+        </div><!-- End Right side columns -->
+
+      </div>
+    </section>
+
+    <div class="pagetitle">
+      <h1>Dilayani</h1>
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
@@ -171,36 +193,34 @@ if($_SESSION['status'] != 'login'){
                       <tr>
                         <th scope="col">No</th>
                         <th scope="col">Nomor Antrian</th>
-                        <th scope="col">Loket</th>
-                        <th scope="col">Waktu</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                     <?php
                         $no = 1;
                         $tampil = mysqli_query($koneksi, "SELECT 
-                                                              a.nomor_antrian,
-                                                              a.status,
-                                                              a.waktu_dibuat,
-                                                              l.nama as nama_loket
-                                                          FROM 
-                                                              antrian a
-                                                          JOIN 
-                                                              loket l ON a.loket_id = l.id
-                                                          WHERE status = 'selesai' ORDER BY waktu_dibuat DESC
-                                                          ;
-                                                          ");
+                                                            a.nomor_antrian,
+                                                            a.status,
+                                                            l.nama as nama_loket
+                                                        FROM 
+                                                            antrian a
+                                                        JOIN 
+                                                        loket l ON a.loket_id = l.id       
+                                                        WHERE 
+                                                            a.status = 'aktif' 
+                                                            AND a.loket_id = '$id_loket'
+                                                        ORDER BY a.id ASC
+                                                      ");
                         while($data = mysqli_fetch_array($tampil)):
                     ?>  
                       <tr>
                         <td><?= $no++ ?></td>
                         <td><?= $data['nomor_antrian'] ?></td>
-                        <td><?= $data['nama_loket'] ?></td>
-                        <td><?= $data['waktu_dibuat'] ?></td>
-                        <td><span class="badge bg-success"><?= $data['status'] ?></span></td>
+                        <td><?= $data['status'] ?></td>
                         <td>
-                             
+                          <a href="proses_selesai.php?nomor_antrian=<?= $data['nomor_antrian'] ?>" onclick="return confirm('Apakah Anda Yakin Sudah Selesai?')" class="btn btn-success">Selesai</a>
                         </td>
                       </tr>
                       <?php
@@ -217,7 +237,11 @@ if($_SESSION['status'] != 'login'){
           </div>
         </div><!-- End Left side columns -->
 
+        <!-- Right side columns -->
+        <div class="col-lg-4">
 
+
+        </div><!-- End Right side columns -->
 
       </div>
     </section>
@@ -252,7 +276,99 @@ if($_SESSION['status'] != 'login'){
 
   <!-- Template Main JS File -->
   <script src="../assets/js/main.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+function loadAntrian() {
+    $.ajax({
+        url: 'get_antrian.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.status === 'success') {
+                const tableBody = $('#antrianTableBody');
+                tableBody.empty(); // Kosongkan tabel
 
+                let rows = '';
+                let no = 1;
+
+                response.data.forEach(item => {
+                    rows += `
+                        <tr>
+                            <td>${no++}</td>
+                            <td>${item.nomor_antrian}</td>
+                            <td>${item.status}</td>
+                            <td>
+                                <a href="#" 
+                                    onclick="return panggilDanRedirect(
+                                        '${item.nomor_antrian}', 
+                                        '${item.nama_loket}', 
+                                        'proses_aktif.php?nomor_antrian=${item.nomor_antrian}'
+                                    )" 
+                                    class="btn btn-warning">Panggil</a>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableBody.append(rows);
+            } else {
+                alert('Gagal memuat data antrian.');
+            }
+        },
+        error: function() {
+            alert('Terjadi kesalahan saat memuat data.');
+        }
+    });
+}
+
+// Panggil fungsi loadAntrian setiap 5 detik
+setInterval(loadAntrian, 5000);
+
+// Panggil pertama kali saat halaman dimuat
+$(document).ready(function() {
+    loadAntrian();
+});
+</script>
+
+
+  <script>
+
+
+// Fungsi untuk memanggil antrian
+function panggilAntrian(nomorAntrian, namaLoket) {
+    // Hentikan semua suara yang sedang berjalan
+    window.speechSynthesis.cancel();
+
+    const teksAntrian = `Nomor antrian ${nomorAntrian}, silahkan menuju ${namaLoket}`;
+    console.log('Memanggil:', teksAntrian); // Debug log
+
+    const speech = new SpeechSynthesisUtterance(teksAntrian);
+    speech.lang = 'id-ID';
+    speech.rate = 0.9;
+    speech.volume = 1;
+    speech.pitch = 1;
+
+    speech.onerror = function(event) {
+        console.error('Kesalahan speech:', event);
+    };
+
+    window.speechSynthesis.speak(speech);
+    return speech;
+}
+
+// Fungsi untuk memanggil antrian dan redirect
+function panggilDanRedirect(nomorAntrian, namaLoket, redirectUrl) {
+    const speech = panggilAntrian(nomorAntrian, namaLoket);
+    
+    speech.onend = function() {
+        setTimeout(() => {
+            window.location.href = redirectUrl;
+        }, 1000);
+    };
+    
+    return false;
+}
+</script>
 
 </body>
 

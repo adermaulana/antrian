@@ -17,6 +17,9 @@
         $login = mysqli_query($koneksi, "SELECT * FROM admin WHERE username='$username' and password='$password'");
         $cek = mysqli_num_rows($login);
 
+        $loginStaff = mysqli_query($koneksi, "SELECT * FROM staff WHERE username='$username' and password='$password'");
+        $cekStaff = mysqli_num_rows($loginStaff);
+
         if($cek > 0) {
             $admin_data = mysqli_fetch_assoc($login);
             $_SESSION['id_admin'] = $admin_data['id'];
@@ -25,7 +28,16 @@
             $_SESSION['status'] = "login";
             header('location:admin');
 
-        }  else {
+        } else if($cekStaff > 0) {
+          $admin_data = mysqli_fetch_assoc($loginStaff);
+          $_SESSION['id_staff'] = $admin_data['id'];
+          $_SESSION['nama_staff'] = $admin_data['nama'];
+          $_SESSION['id_loket'] = $admin_data['id_loket'];
+          $_SESSION['username_staff'] = $username;
+          $_SESSION['status'] = "login";
+          header('location:staff');
+
+      }  else {
             echo "<script>
             alert('Login Gagal, Periksa Username dan Password Anda!');
             header('location:login.php');
@@ -42,7 +54,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Pages / Login - NiceAdmin Bootstrap Template</title>
+  <title>Login</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 

@@ -13,37 +13,17 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if(isset($_GET['hal'])){
-    if($_GET['hal'] == "edit"){
-        $tampil = mysqli_query($koneksi, "SELECT * FROM loket WHERE id = '$_GET[id]'");
-        $data = mysqli_fetch_array($tampil);
-        if($data){
-            $id = $data['id'];
-            $nama = $data['nama'];
-            $status = $data['status'];
-        }
+if(isset($_GET['hal']) == "hapus"){
+
+    $hapus = mysqli_query($koneksi, "DELETE FROM staff WHERE id = '$_GET[id]'");
+  
+    if($hapus){
+        echo "<script>
+        alert('Hapus data sukses!');
+        document.location='staff.php';
+        </script>";
     }
-}
-
-//Perintah Mengubah Data
-if(isset($_POST['simpan'])){
-
-    $simpan = mysqli_query($koneksi, "UPDATE loket SET
-                                        nama = '$_POST[name]',
-                                        status = '$_POST[status]' WHERE id = '$_GET[id]'");
-    
-if($simpan){
-    echo "<script>
-            alert('Edit data sukses!');
-            document.location='loket.php';
-        </script>";
-} else {
-    echo "<script>
-            alert('Edit data Gagal!');
-            document.location='loket.php';
-        </script>";
-}
-}
+  }
 
 ?>
 <!DOCTYPE html>
@@ -181,7 +161,6 @@ if($simpan){
         </a>
       </li>
 
-
     </ul>
 
   </aside><!-- End Sidebar-->
@@ -189,47 +168,69 @@ if($simpan){
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Loket</h1>
+      <h1>Data Customer Service</h1>
     </div><!-- End Page Title -->
 
-    <section class="section">
+    <section class="section dashboard">
       <div class="row">
-        <div class="col-lg-12">
 
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Tambah Loket</h5>
-              <!-- Horizontal Form -->
-              <form method="post">
-                <div class="row mb-3">
-                  <label for="name" class="col-sm-2 col-form-label">Nama</label>
-                  <div class="col-sm-6">
-                    <input type="text" class="form-control" id="name" value="<?= $nama ?>" name="name" required autofocus>
-                  </div>
+            <!-- Recent Sales -->
+            <div class="col-12">
+              <div class="card recent-sales overflow-auto">
+                  <div class="card-body">
+                  <a class="btn btn-success mb-3 mt-3" href="tambahstaff.php">Tambah Data</a>
+                  <table class="table table-borderless datatable">
+                    <thead>
+                      <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Nama Customer Service</th>
+                        <th scope="col">Lokasi Loket</th>
+                        <th scope="col">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        $no = 1;
+                        $tampil = mysqli_query($koneksi, "SELECT 
+                            staff.id,
+                            staff.nama AS staff_nama,
+                            loket.id AS loket_id,
+                            loket.nama AS loket_nama
+                        FROM 
+                            staff
+                        JOIN 
+                            loket ON staff.id_loket = loket.id
+                        ");
+                        while($data = mysqli_fetch_array($tampil)):
+                    ?>                       
+                      <tr>
+                        <td><?= $no++ ?></td>
+                        <td><?= $data['staff_nama'] ?></td>
+                        <td><?= $data['loket_nama'] ?></td>
+                        <td>
+                            <a href="editstaff.php?hal=edit&id=<?= $data['id'] ?>" class="btn btn-warning">Edit</a>
+                            <a href="staff.php?hal=hapus&id=<?= $data['id'] ?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')" class="btn btn-danger">Hapus</a>
+                        </td>
+                      </tr>
+                      <?php
+                        endwhile; 
+                      ?>
+                    </tbody>
+                  </table>
+
                 </div>
 
-                <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Status</label>
-                  <div class="col-sm-6">
-                    <select class="form-select" name="status" aria-label="Default select example">
-                      <option selected disabled>Pilih</option>
-                      <option value="Aktif">Aktif</option>
-                      <option value="Tidak Aktif">Tidak Aktif</option>
-                    </select>
-                    <div class="col-sm-6 mt-3">
-                        <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
-                      </div>
-                  </div>
-                </div>
-                
-              </form><!-- End Horizontal Form -->
+              </div>
+            </div><!-- End Recent Sales -->
 
-            </div>
           </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
 
 
-
-        </div>
+        </div><!-- End Right side columns -->
 
       </div>
     </section>

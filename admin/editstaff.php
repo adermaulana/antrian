@@ -13,36 +13,52 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if(isset($_GET['hal'])){
-    if($_GET['hal'] == "edit"){
-        $tampil = mysqli_query($koneksi, "SELECT * FROM loket WHERE id = '$_GET[id]'");
-        $data = mysqli_fetch_array($tampil);
-        if($data){
-            $id = $data['id'];
-            $nama = $data['nama'];
-            $status = $data['status'];
-        }
-    }
-}
+if (isset($_GET['id'])) {
+  $id = $_GET['id'];
 
-//Perintah Mengubah Data
-if(isset($_POST['simpan'])){
+  $query = mysqli_query($koneksi, "SELECT * FROM staff WHERE id = '$id'");
+  $data = mysqli_fetch_assoc($query);
 
-    $simpan = mysqli_query($koneksi, "UPDATE loket SET
-                                        nama = '$_POST[name]',
-                                        status = '$_POST[status]' WHERE id = '$_GET[id]'");
-    
-if($simpan){
-    echo "<script>
-            alert('Edit data sukses!');
-            document.location='loket.php';
-        </script>";
+  // Jika data tidak ditemukan
+  if (!$data) {
+      echo "<script>
+              alert('Data tidak ditemukan!');
+              document.location='staff.php';
+            </script>";
+      exit;
+  }
 } else {
-    echo "<script>
-            alert('Edit data Gagal!');
-            document.location='loket.php';
+  echo "<script>
+          alert('ID tidak ditemukan!');
+          document.location='staff.php';
         </script>";
+  exit;
 }
+
+// Proses simpan data hasil edit
+if (isset($_POST['update'])) {
+  $nama = $_POST['name'];
+  $username = $_POST['username'];
+  $password = !empty($_POST['password']) ? md5($_POST['password']) : $data['password']; // Jika password kosong, gunakan yang lama
+  $id_loket = $_POST['id_loket'];
+
+  $update = mysqli_query($koneksi, "
+      UPDATE staff 
+      SET nama = '$nama', username = '$username', password = '$password', id_loket = '$id_loket' 
+      WHERE id = '$id'
+  ");
+
+  if ($update) {
+      echo "<script>
+              alert('Update data sukses!');
+              document.location='staff.php';
+            </script>";
+  } else {
+      echo "<script>
+              alert('Update data gagal!');
+              document.location='editstaff.php?id=$id';
+            </script>";
+  }
 }
 
 ?>
@@ -199,31 +215,45 @@ if($simpan){
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Tambah Loket</h5>
-              <!-- Horizontal Form -->
               <form method="post">
-                <div class="row mb-3">
-                  <label for="name" class="col-sm-2 col-form-label">Nama</label>
-                  <div class="col-sm-6">
-                    <input type="text" class="form-control" id="name" value="<?= $nama ?>" name="name" required autofocus>
-                  </div>
-                </div>
-
-                <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Status</label>
-                  <div class="col-sm-6">
-                    <select class="form-select" name="status" aria-label="Default select example">
-                      <option selected disabled>Pilih</option>
-                      <option value="Aktif">Aktif</option>
-                      <option value="Tidak Aktif">Tidak Aktif</option>
-                    </select>
-                    <div class="col-sm-6 mt-3">
-                        <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
+                  <div class="row mb-3">
+                      <label for="name" class="col-sm-2 col-form-label">Nama</label>
+                      <div class="col-sm-6">
+                          <input type="text" class="form-control" id="name" name="name" value="<?= $data['nama'] ?>" required autofocus>
                       </div>
                   </div>
-                </div>
-                
-              </form><!-- End Horizontal Form -->
-
+                  <div class="row mb-3">
+                      <label for="username" class="col-sm-2 col-form-label">Username</label>
+                      <div class="col-sm-6">
+                          <input type="text" class="form-control" id="username" name="username" value="<?= $data['username'] ?>" required>
+                      </div>
+                  </div>
+                  <div class="row mb-3">
+                      <label for="password" class="col-sm-2 col-form-label">Password</label>
+                      <div class="col-sm-6">
+                          <input type="password" class="form-control" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah">
+                      </div>
+                  </div>
+                  <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label">Loket</label>
+                      <div class="col-sm-6">
+                          <select class="form-select" name="id_loket" required>
+                              <option value="" disabled>Pilih Loket</option>
+                              <?php
+                                  $loketQuery = mysqli_query($koneksi, "SELECT * FROM loket");
+                                  while ($loket = mysqli_fetch_assoc($loketQuery)) {
+                                      $selected = $loket['id'] == $data['id_loket'] ? 'selected' : '';
+                                      echo "<option value='{$loket['id']}' $selected>{$loket['nama']}</option>";
+                                  }
+                              ?>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="col-sm-6 mt-3">
+                      <button type="submit" name="update" class="btn btn-primary">Update</button>
+                      <a href="staff.php" class="btn btn-secondary">Batal</a>
+                  </div>
+              </form>
             </div>
           </div>
 

@@ -154,6 +154,12 @@ if(isset($_GET['hal']) == "hapus"){
         </a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="staff.php">
+          <i class="bi bi-layout-text-window-reverse"></i>
+          <span>Customer Service</span>
+        </a>
+      </li>
 
     </ul>
 

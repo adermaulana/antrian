@@ -13,38 +13,6 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if(isset($_GET['hal'])){
-    if($_GET['hal'] == "edit"){
-        $tampil = mysqli_query($koneksi, "SELECT * FROM loket WHERE id = '$_GET[id]'");
-        $data = mysqli_fetch_array($tampil);
-        if($data){
-            $id = $data['id'];
-            $nama = $data['nama'];
-            $status = $data['status'];
-        }
-    }
-}
-
-//Perintah Mengubah Data
-if(isset($_POST['simpan'])){
-
-    $simpan = mysqli_query($koneksi, "UPDATE loket SET
-                                        nama = '$_POST[name]',
-                                        status = '$_POST[status]' WHERE id = '$_GET[id]'");
-    
-if($simpan){
-    echo "<script>
-            alert('Edit data sukses!');
-            document.location='loket.php';
-        </script>";
-} else {
-    echo "<script>
-            alert('Edit data Gagal!');
-            document.location='loket.php';
-        </script>";
-}
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,7 +21,7 @@ if($simpan){
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Dashboard - Admin</title>
+  <title>Dashboard - Staff</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -107,12 +75,12 @@ if($simpan){
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2"><?= $_SESSION['nama_admin'] ?></span>
+            <span class="d-none d-md-block dropdown-toggle ps-2"><?= $_SESSION['nama_staff'] ?></span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6><?= $_SESSION['nama_admin'] ?></h6>
+              <h6><?= $_SESSION['nama_staff'] ?></h6>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -147,40 +115,11 @@ if($simpan){
       <li class="nav-heading">Pages</li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="antrian-aktif.php">
+        <a class="nav-link collapsed" href="antrian.php">
           <i class="bi bi-person"></i>
-          <span>Antrian Aktif</span>
+          <span>Antrian</span>
         </a>
       </li><!-- End Profile Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="riwayat-antrian.php">
-          <i class="bi bi-envelope"></i>
-          <span>Riwayat Antrian</span>
-        </a>
-      </li><!-- End Contact Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="laporan-antrian.php">
-          <i class="bi bi-card-list"></i>
-          <span>Laporan Antrian</span>
-        </a>
-      </li><!-- End Register Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="loket.php">
-          <i class="bi bi-layout-text-window-reverse"></i>
-          <span>Loket</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="staff.php">
-          <i class="bi bi-layout-text-window-reverse"></i>
-          <span>Customer Service</span>
-        </a>
-      </li>
-
 
     </ul>
 
@@ -189,66 +128,28 @@ if($simpan){
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Loket</h1>
+      <h1>Welcome, <?= $_SESSION['nama_staff'] ?></h1>
     </div><!-- End Page Title -->
 
-    <section class="section">
+    <section class="section dashboard">
       <div class="row">
+
+        <!-- Left side columns -->
         <div class="col-lg-12">
-
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Tambah Loket</h5>
-              <!-- Horizontal Form -->
-              <form method="post">
-                <div class="row mb-3">
-                  <label for="name" class="col-sm-2 col-form-label">Nama</label>
-                  <div class="col-sm-6">
-                    <input type="text" class="form-control" id="name" value="<?= $nama ?>" name="name" required autofocus>
-                  </div>
-                </div>
-
-                <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Status</label>
-                  <div class="col-sm-6">
-                    <select class="form-select" name="status" aria-label="Default select example">
-                      <option selected disabled>Pilih</option>
-                      <option value="Aktif">Aktif</option>
-                      <option value="Tidak Aktif">Tidak Aktif</option>
-                    </select>
-                    <div class="col-sm-6 mt-3">
-                        <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
-                      </div>
-                  </div>
-                </div>
-                
-              </form><!-- End Horizontal Form -->
-
-            </div>
+          <div class="row">
           </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
 
 
-
-        </div>
+        </div><!-- End Right side columns -->
 
       </div>
     </section>
 
   </main><!-- End #main -->
-
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-    <div class="copyright">
-      &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
-    </div>
-    <div class="credits">
-      <!-- All the links in the footer should remain intact. -->
-      <!-- You can delete the links only if you purchased the pro version. -->
-      <!-- Licensing information: https://bootstrapmade.com/license/ -->
-      <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-    </div>
-  </footer><!-- End Footer -->
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 

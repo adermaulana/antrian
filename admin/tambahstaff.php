@@ -13,36 +13,35 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if(isset($_GET['hal'])){
-    if($_GET['hal'] == "edit"){
-        $tampil = mysqli_query($koneksi, "SELECT * FROM loket WHERE id = '$_GET[id]'");
-        $data = mysqli_fetch_array($tampil);
-        if($data){
-            $id = $data['id'];
-            $nama = $data['nama'];
-            $status = $data['status'];
-        }
-    }
-}
+if (isset($_POST['simpan'])) {
+  // Check if email already exists
+  $username = $_POST['username'];
+  $checkUsername = mysqli_query($koneksi, "SELECT * FROM staff WHERE username='$username'");
 
-//Perintah Mengubah Data
-if(isset($_POST['simpan'])){
+  if (mysqli_num_rows($checkUsername) > 0) {
+      echo "<script>
+              alert('User sudah terdaftar!');
+              document.location='tambahstaff.php';
+            </script>";
+  } else {
+      // Hash the password using md5
+      $hashedPassword = md5($_POST['password']);
+      $active = true;
+      // Insert new user into the database
+      $simpan = mysqli_query($koneksi, "INSERT INTO staff (nama, username, password, id_loket) VALUES ('$_POST[name]', '$username', '$hashedPassword','$_POST[id_loket]')");
 
-    $simpan = mysqli_query($koneksi, "UPDATE loket SET
-                                        nama = '$_POST[name]',
-                                        status = '$_POST[status]' WHERE id = '$_GET[id]'");
-    
-if($simpan){
-    echo "<script>
-            alert('Edit data sukses!');
-            document.location='loket.php';
-        </script>";
-} else {
-    echo "<script>
-            alert('Edit data Gagal!');
-            document.location='loket.php';
-        </script>";
-}
+      if ($simpan) {
+          echo "<script>
+                  alert('Simpan data sukses!');
+                  document.location='staff.php';
+              </script>";
+      } else {
+          echo "<script>
+                  alert('Simpan data Gagal!');
+                  document.location='tambahstaff.php';
+              </script>";
+      }
+  }
 }
 
 ?>
@@ -181,7 +180,6 @@ if($simpan){
         </a>
       </li>
 
-
     </ul>
 
   </aside><!-- End Sidebar-->
@@ -204,17 +202,34 @@ if($simpan){
                 <div class="row mb-3">
                   <label for="name" class="col-sm-2 col-form-label">Nama</label>
                   <div class="col-sm-6">
-                    <input type="text" class="form-control" id="name" value="<?= $nama ?>" name="name" required autofocus>
+                    <input type="text" class="form-control" id="name" name="name" required autofocus>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="name" class="col-sm-2 col-form-label">Username</label>
+                  <div class="col-sm-6">
+                    <input type="text" class="form-control" id="username" name="username" required>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="password" class="col-sm-2 col-form-label">Password</label>
+                  <div class="col-sm-6">
+                    <input type="password" class="form-control" id="password" name="password" required>
                   </div>
                 </div>
 
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Status</label>
+                  <label class="col-sm-2 col-form-label">Loket</label>
                   <div class="col-sm-6">
-                    <select class="form-select" name="status" aria-label="Default select example">
-                      <option selected disabled>Pilih</option>
-                      <option value="Aktif">Aktif</option>
-                      <option value="Tidak Aktif">Tidak Aktif</option>
+                    <select class="form-select" name="id_loket">
+                      <option value="" selected disabled>Pilih</option>
+                      <?php
+                          $no = 1;
+                          $tampil = mysqli_query($koneksi, "SELECT * FROM loket");
+                          while($data = mysqli_fetch_array($tampil)):
+                      ?>
+                      <option value="<?= $data['id'] ?>"><?= $data['nama'] ?></option>
+                      <?php endwhile; ?>
                     </select>
                     <div class="col-sm-6 mt-3">
                         <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
@@ -222,7 +237,7 @@ if($simpan){
                   </div>
                 </div>
                 
-              </form><!-- End Horizontal Form -->
+              </form>
 
             </div>
           </div>

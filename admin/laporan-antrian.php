@@ -145,6 +145,12 @@ $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d');
         </a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="staff.php">
+          <i class="bi bi-layout-text-window-reverse"></i>
+          <span>Customer Service</span>
+        </a>
+      </li>
 
     </ul>
 
